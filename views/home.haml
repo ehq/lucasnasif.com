@@ -1,0 +1,46 @@
+#gol
+
+#info_container
+  .background
+  .foreground
+    %h1.name Lucas Nasif
+    .links
+      %a(href='http://ar.linkedin.com/in/ehqhvm' target='_blank')
+        .linkedin.link
+      %a(href='http://twitter.com/ehqhvm' target='_blank')
+        .twitter.link
+      %a(href='http://www.facebook.com/lucas.nasif' target='_blank')
+        .facebook.link
+      %a(href='http://github.com/ehqhvm' target='_blank')
+        .github.link
+      %a(href='mailto:nasif.lucas@gmail.com')
+        .gmail.link
+    %p
+      I'm a software developer located in Buenos Aires, Argentina.
+    %p
+      Check out the links above or
+      %a#enjoy_the_show enjoy the show
+      \.
+
+.controls
+  .title
+    %h3
+      %a(href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life" target='_blank')
+        .logo
+  %br
+  .buttons
+    %input#reset(type='submit' value='Populate')
+
+    #speed
+      %a.slow(data-speed='250')
+      %a.fast(data-speed='100')
+      %a.faster(data-speed='50')
+
+    #size
+      %a.small(data-size=50)
+      %a.medium(data-size=150)
+      %a.large.max_size(data-size=250)
+      %a.insane_size(data-size=400)
+
+#fork_me
+  <a href="http://github.com/ehqhvm/lucasnasif.com"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub"></a>

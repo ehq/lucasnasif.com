@@ -1,0 +1,33 @@
+!!! 5
+%html
+  %head
+    %title Lucas Nasif
+
+    %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    %meta(name="Description" content="Lucas Nasif - Software developer | Follow me on twitter (ehqhvm) or contact me at nasif.lucas@gmail.com")
+    %meta(name="Keywords" content="lucas nasif developer software engineer ruby lua javascript html5")
+
+    %link(rel="stylesheet" href="/css/reset.css" type="text/css")
+    %link(rel="stylesheet" href="/css/app.css"   type="text/css")
+
+    <!--[if IE]><script type="text/javascript" src="/js/excanvas.js"></script>![endif]-->
+    %script(type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js")
+    %script(type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js")
+    %script(type="text/javascript" src="/js/js.js")
+
+    :javascript
+      var _gaq = _gaq || [];
+
+      _gaq.push(['_setAccount', 'UA-21201516-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+  %body
+    = content
+
+    %footer
