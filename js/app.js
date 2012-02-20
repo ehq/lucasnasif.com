@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // Start the Game of Life widget.
-  GoL.init($("#gol"), { 'size': 150, 'speed': 100 });
+  GoL3D.init($("#gol"), { 'size': 150, 'speed': 100 });
 
   $("#enjoy_the_show").click(function() {
     $("footer, .controls, #fork_me").fadeIn("slow");

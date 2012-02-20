@@ -15,4 +15,8 @@ Cuba.define do
   on get, "" do
     res.write view("home")
   end
+
+  on get, "3d" do
+    res.write view("3d")
+  end
 end

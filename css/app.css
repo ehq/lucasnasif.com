@@ -16,9 +16,10 @@ a {
 #info_container {
   padding: 20px;
   margin: 20px;
-  width: 600px;
-  height: 200px;
+  width: 400px;
+  height: 120px;
   position: absolute;
+  z-index: 11;
 }
 #info_container p {
   float: left;
@@ -44,6 +45,7 @@ a {
   left: 20px;
 }
 .name {
+  cursor: none;
   margin-right: 15px;
   font-size: 55px;
   color: #5B7AAA;
