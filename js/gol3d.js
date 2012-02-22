@@ -28,13 +28,9 @@ var GoL3D = {
     this.scene = new THREE.Scene();
 
     // Camera
-    this.camera = new THREE.CombinedCamera(window.innerWidth,
-                                           window.innerHeight,
-                                           40,
-                                           1,
-                                           10000,
-                                           -2000,
-                                           10000);
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    this.camera = new THREE.CombinedCamera(w, h, 40, 1, 10000, -2000, 10000);
 
     this.camera.position.y = 600;
     this.camera.position.x = 1400 * Math.sin(this.theta * Math.PI / 360);
@@ -69,16 +65,9 @@ var GoL3D = {
     var ambientLight = new THREE.AmbientLight(0x606060);
     this.scene.add(ambientLight);
 
-    var directionalLight = new THREE.DirectionalLight(0xffffff);
-
-    directionalLight.position.set(1, 0.75, 0.5).normalize();
-
-    this.scene.add(directionalLight);
-
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
-
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-
+    // Renderer
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(w, h);
     this.container.appendChild(this.renderer.domElement);
   },
 
@@ -123,7 +112,7 @@ var GoL3D = {
     var self    = this;
     var floor   = Math.floor;
     var random  = Math.random;
-    var limit   = 200 * 50;
+    var limit   = 200 * 35;
     var x, y;
 
     this.alive = [];
