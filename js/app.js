@@ -3,10 +3,11 @@ $(document).ready(function() {
   GoL3D.init($("#gol"), { 'size': 150, 'speed': 100 });
 
   $("#enjoy_the_show").click(function() {
-    $("footer, .controls, #fork_me").fadeIn("slow");
-    $("#info_container").fadeOut("slow");
-    $("#gol_container").animate({ "opacity": 1 }, 3000, function() {
-      $("#gol_container").animate({class: "cool"}, 5000);
-    });
+    // $("footer, .controls, #fork_me").fadeIn("slow");
+    // $("#info_container").fadeOut("slow");
+  });
+
+  $("#read_more").click(function() {
+    GoL3D.should_push_right = true;
   });
 });

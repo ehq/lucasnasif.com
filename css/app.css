@@ -44,9 +44,6 @@ a {
   background: black;
   opacity: 0.8;
   left: 20px;
-  -moz-box-shadow:    5px 5px 5px 6px #000;
-  -webkit-box-shadow: 5px 5px 5px 6px #000;
-  box-shadow:         5px 5px 5px 6px #000;
 }
 .name {
   cursor: none;
@@ -170,9 +167,6 @@ a {
   background: -moz-linear-gradient(19% 75% 90deg, #065366, #0EBBCF);
   outline: none;
   border: #35a5e5 1px solid !important;
-  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  -webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  -moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 }
 .controls .title {
   font-family: helvetica;

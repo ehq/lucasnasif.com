@@ -2,12 +2,13 @@ var GoL3D = {
   init: function(element, options) {
     this.buildScene();
 
-    this.size  = 200;
+    this.size  = 50;
     this.grid  = this.initializeGrid(this.size, this.size);
     this.cubes = this.initializeGrid(this.size, this.size);
 
     this.randomnizeGrid();
 
+    this.cubesLoop();
     this.animate();
   },
 
@@ -24,6 +25,9 @@ var GoL3D = {
     })
 
     this.theta = 45;
+    this.camera_x = 1400
+    this.camera_y = 600
+    this.camera_z = 1400
     this.cameraTarget = new THREE.Vector3(0,0,0);
 
     // Scene
@@ -34,9 +38,6 @@ var GoL3D = {
     var h = window.innerHeight;
     this.camera = new THREE.CombinedCamera(w, h, 40, 1, 10000, -2000, 10000);
 
-    this.camera.position.y = 600;
-    this.camera.position.x = 1400 * Math.sin(this.theta * Math.PI / 360);
-    this.camera.position.z = 1400 * Math.cos(this.theta * Math.PI / 360);
     this.camera.lookAt(this.cameraTarget);
 
     this.scene.add(this.camera);
@@ -89,8 +90,23 @@ var GoL3D = {
   },
 
   animate: function() {
-    setTimeout(GoL3D.animate, 150);
-    GoL3D.run();
+    requestAnimationFrame(GoL3D.animate)
+
+    if (GoL3D.should_push_right && GoL3D.camera_x < 6000) GoL3D.camera_x += 50;
+    if (GoL3D.should_push_right && GoL3D.camera_z > 800) GoL3D.camera_z  -= 10;
+    if (GoL3D.should_push_right && GoL3D.camera_y > 300) GoL3D.camera_y  -= 10;
+
+    GoL3D.camera.position.y = GoL3D.camera_y;
+    GoL3D.camera.position.z = GoL3D.camera_z * Math.cos(GoL3D.theta * Math.PI / 360);
+    GoL3D.camera.position.x = GoL3D.camera_x * Math.sin(GoL3D.theta * Math.PI / 360);
+    GoL3D.camera.lookAt(GoL3D.cameraTarget);
+
+    GoL3D.render()
+  },
+
+  cubesLoop: function() {
+    setTimeout(GoL3D.cubesLoop, 150)
+    GoL3D.nextGeneration()
   },
 
   render: function() {
@@ -107,10 +123,10 @@ var GoL3D = {
   },
 
   randomnizeGrid: function() {
-    var self    = this;
-    var floor   = Math.floor;
-    var random  = Math.random;
-    var limit   = this.size * 30;
+    var self   = this;
+    var floor  = Math.floor;
+    var random = Math.random;
+    var limit  = this.size * 30;
     var x, y;
 
     this.alive = [];
@@ -123,11 +139,6 @@ var GoL3D = {
       self.grid[x][y] = 10;
       self.alive.push([x,y])
     }
-  },
-
-  run: function() {
-    this.nextGeneration()
-    this.render()
   },
 
   nextGeneration: function() {
