@@ -2,8 +2,9 @@ var GoL3D = {
   init: function(element, options) {
     this.buildScene();
 
-    this.grid  = this.initializeGrid(200,200);
-    this.cubes = this.initializeGrid(200,200);
+    this.size  = 200;
+    this.grid  = this.initializeGrid(this.size, this.size);
+    this.cubes = this.initializeGrid(this.size, this.size);
 
     this.randomnizeGrid();
 
@@ -18,7 +19,8 @@ var GoL3D = {
       "position": "absolute",
       "z-index": 10,
       "top": 0,
-      "left": 0
+      "left": 0,
+      "background": "black"
     })
 
     this.theta = 45;
@@ -52,7 +54,7 @@ var GoL3D = {
 
     // Plane
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
-                                new THREE.MeshBasicMaterial({ color: 0xDDDDDD, wireframe: true }));
+                                new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
 
     // Projector
     this.projector = new THREE.Projector();
@@ -60,10 +62,6 @@ var GoL3D = {
     // FIXME: Adding this rotations means we need to rotate the cubes as well.
     // this.plane.rotation.x = - 80 * Math.PI / 180;
     this.scene.add(this.plane);
-
-    // Lights
-    var ambientLight = new THREE.AmbientLight(0x606060);
-    this.scene.add(ambientLight);
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -77,7 +75,7 @@ var GoL3D = {
     if (!cube) {
       cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
 
-      cube.position = new THREE.Vector3((x - 150) * 20 + 10, (y - 150) * 20 + 10, 10)
+      cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
 
       this.cubes[x][y] = cube;
     }
@@ -91,7 +89,7 @@ var GoL3D = {
   },
 
   animate: function() {
-    setTimeout(GoL3D.animate, 100);
+    setTimeout(GoL3D.animate, 150);
     GoL3D.run();
   },
 
@@ -112,15 +110,15 @@ var GoL3D = {
     var self    = this;
     var floor   = Math.floor;
     var random  = Math.random;
-    var limit   = 200 * 35;
+    var limit   = this.size * 30;
     var x, y;
 
     this.alive = [];
     this.candidates = [];
 
     for (i = 0; i < limit; i++) {
-      x = floor(random()*200);
-      y = floor(random()*200);
+      x = floor(random()*self.size);
+      y = floor(random()*self.size);
 
       self.grid[x][y] = 10;
       self.alive.push([x,y])
@@ -180,7 +178,7 @@ var GoL3D = {
     ];
 
     for (j = 0; j < 8; j++)
-      if (coords[j][0] >= 0 && coords[j][0] < 200 && coords[j][1] >= 0 && coords[j][1] < 200) {
+      if (coords[j][0] >= 0 && coords[j][0] < self.size && coords[j][1] >= 0 && coords[j][1] < self.size) {
         x = coords[j][0]; y = coords[j][1];
 
         if (self.grid[x][y])
