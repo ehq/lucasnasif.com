@@ -5,6 +5,7 @@ var GoL3D = {
     this.size  = 50;
     this.grid  = this.initializeGrid(this.size, this.size);
     this.cubes = this.initializeGrid(this.size, this.size);
+    this.transitions = [];
 
     this.randomnizeGrid();
 
@@ -24,12 +25,6 @@ var GoL3D = {
       "background": "black"
     })
 
-    this.theta = 45;
-    this.camera_x = 1400
-    this.camera_y = 600
-    this.camera_z = 1400
-    this.cameraTarget = new THREE.Vector3(0,0,0);
-
     // Scene
     this.scene = new THREE.Scene();
 
@@ -37,7 +32,16 @@ var GoL3D = {
     var w = window.innerWidth;
     var h = window.innerHeight;
     this.camera = new THREE.CombinedCamera(w, h, 40, 1, 10000, -2000, 10000);
-
+    this.theta = Math.cos(45 * Math.PI / 360);
+    this.alpha = Math.sin(45 * Math.PI / 360);
+    this.still_camera = { x: false, y: false, z: false };
+    this.camera_x = 1400
+    this.camera_y = 600
+    this.camera_z = 1400
+    this.cameraTarget = new THREE.Vector3(0,0,0);
+    this.camera.position.y = this.camera_y;
+    this.camera.position.z = this.camera_z * this.theta;
+    this.camera.position.x = this.camera_x * this.alpha;
     this.camera.lookAt(this.cameraTarget);
 
     this.scene.add(this.camera);
@@ -46,8 +50,8 @@ var GoL3D = {
     this.cubeGeo = new THREE.CubeGeometry(20,20,20);
 
     this.cubeMaterial = new THREE.MeshBasicMaterial({
-      shading: THREE.SmoothShading,
-      map:     THREE.ImageUtils.loadTexture("/images/square-outline.png")
+      shading: THREE.FlatShading,
+      map: THREE.ImageUtils.loadTexture("/images/square-outline.png")
     });
 
     this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
@@ -56,9 +60,6 @@ var GoL3D = {
     // Plane
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
                                 new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
-
-    // Projector
-    this.projector = new THREE.Projector();
 
     // FIXME: Adding this rotations means we need to rotate the cubes as well.
     // this.plane.rotation.x = - 80 * Math.PI / 180;
@@ -91,17 +92,34 @@ var GoL3D = {
 
   animate: function() {
     requestAnimationFrame(GoL3D.animate)
+    GoL3D.moveCamera();
+    GoL3D.render();
+  },
 
-    if (GoL3D.should_push_right && GoL3D.camera_x < 6000) GoL3D.camera_x += 50;
-    if (GoL3D.should_push_right && GoL3D.camera_z > 800) GoL3D.camera_z  -= 10;
-    if (GoL3D.should_push_right && GoL3D.camera_y > 300) GoL3D.camera_y  -= 10;
+  transition: function(x,y,z) {
+    this.transitions.push({ x: x, y: y, z: z });
+  },
 
-    GoL3D.camera.position.y = GoL3D.camera_y;
-    GoL3D.camera.position.z = GoL3D.camera_z * Math.cos(GoL3D.theta * Math.PI / 360);
-    GoL3D.camera.position.x = GoL3D.camera_x * Math.sin(GoL3D.theta * Math.PI / 360);
-    GoL3D.camera.lookAt(GoL3D.cameraTarget);
+  moveCamera: function() {
+    var diff, tr = this.transitions[0];
+    if (!tr) return;
 
-    GoL3D.render()
+    $.each(["x","y","z"], function(_,axis) {
+      diff = GoL3D["camera_"+axis] - tr[axis]
+      Math.abs(diff) > 30 ? GoL3D["camera_"+axis] += 30 * (diff > 0 ? -1 : 1) :
+      GoL3D.still_camera[axis] = true;
+    });
+
+    if (this.still_camera.x && this.still_camera.y && this.still_camera.z) {
+      this.transitions.shift();
+      this.still_camera = { x: false, y: false, z: false };
+    }
+
+    this.camera.position.y = this.camera_y;
+    this.camera.position.z = this.camera_z * this.theta;
+    this.camera.position.x = this.camera_x * this.alpha;
+
+    this.camera.lookAt(this.cameraTarget);
   },
 
   cubesLoop: function() {

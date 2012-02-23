@@ -28,6 +28,9 @@ a {
   margin-right: 0px;
   color: white;
 }
+.read_more p {
+  padding: 10px 0;
+}
 #info_container .foreground {
   width: 100%;
   height: 100%;
