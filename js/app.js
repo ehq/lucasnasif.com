@@ -1,15 +1,21 @@
 $(document).ready(function() {
   // Start the Game of Life widget.
-  GoL3D.init($("#gol"), { 'size': 150, 'speed': 100 });
+  GoL3D.init($("#gol"), { 'size': 200, 'speed': 150 });
 
   $("#enjoy_the_show").click(function() {
-    // $("footer, .controls, #fork_me").fadeIn("slow");
-    // $("#info_container").fadeOut("slow");
-
     $("#info_container").fadeOut("slow");
-    GoL3D.transition(-2000, 1600, 3800);
-    GoL3D.transition(1400, 0, 400);
-    GoL3D.transition(400, -1000, -1400);
+    GoL3D.transition(-2000, 1600, 2800);
+    GoL3D.transition(800, 200, 100);
+    GoL3D.transition(5500, 200, 100);
+    GoL3D.transition(-3000, 200, 400);
+    GoL3D.transition(-4000, 200, -400);
+    GoL3D.transition(0, 200, -400);
+    GoL3D.transition(200, 200, -400);
+    GoL3D.transition(200, 200, -400);
+    GoL3D.transition(200, 200, 400);
+    GoL3D.transition(400, 200, 550);
+    GoL3D.transition(600, 200, 700);
+    GoL3D.transition(1200, 100, 900);
     GoL3D.transition(1400, 600, 1400);
   });
 
