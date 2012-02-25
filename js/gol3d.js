@@ -1,13 +1,12 @@
 var GoL3D = {
   init: function(element, options) {
-    this.buildScene();
-
-    this.size  = 50;
-    this.grid  = this.initializeGrid(this.size, this.size);
-    this.cubes = this.initializeGrid(this.size, this.size);
+    this.size = 150;
     this.transitions = [];
 
+    this.initializeGrid(this.size, this.size);
+    this.initializeCubes(this.size, this.size);
     this.randomnizeGrid();
+    this.buildScene();
 
     this.cubesLoop();
     this.animate();
@@ -46,23 +45,10 @@ var GoL3D = {
 
     this.scene.add(this.camera);
 
-    // Cubes settings
-    this.cubeGeo = new THREE.CubeGeometry(20,20,20);
-
-    this.cubeMaterial = new THREE.MeshBasicMaterial({
-      shading: THREE.FlatShading,
-      map: THREE.ImageUtils.loadTexture("/images/square-outline.png")
-    });
-
-    this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
-    this.cubeMaterial.ambient = this.cubeMaterial.color;
-
     // Plane
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
                                 new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
 
-    // FIXME: Adding this rotations means we need to rotate the cubes as well.
-    // this.plane.rotation.x = - 80 * Math.PI / 180;
     this.scene.add(this.plane);
 
     // Renderer
@@ -72,21 +58,11 @@ var GoL3D = {
   },
 
   drawCell: function(x,y) {
-    var cube = this.cubes[x][y];
-
-    if (!cube) {
-      cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-
-      cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
-
-      this.cubes[x][y] = cube;
-    }
-
-    this.scene.add(cube);
+    this.scene.add(this.cubes[x][y]);
   },
 
   killCell: function(x,y) {
-    if (this.cubes[x][y]) this.scene.remove(this.cubes[x][y]);
+    this.scene.remove(this.cubes[x][y]);
     this.grid[x][y] = undefined;
   },
 
@@ -106,8 +82,9 @@ var GoL3D = {
 
     $.each(["x","y","z"], function(_,axis) {
       diff = GoL3D["camera_"+axis] - tr[axis]
-      Math.abs(diff) > 30 ? GoL3D["camera_"+axis] += 30 * (diff > 0 ? -1 : 1) :
-      GoL3D.still_camera[axis] = true;
+      Math.abs(diff) > 30 ?
+        GoL3D["camera_"+axis] += 30 * (diff > 0 ? -1 : 1) :
+        GoL3D.still_camera[axis] = true;
     });
 
     if (this.still_camera.x && this.still_camera.y && this.still_camera.z) {
@@ -131,13 +108,41 @@ var GoL3D = {
     this.renderer.render(this.scene, this.camera);
   },
 
-  initializeGrid: function(rows, columns) {
+  matrix: function(rows, columns) {
     var grid = new Array(rows);
 
     for (i = 0; i < rows; i++)
       grid[i] = new Array(columns);
 
     return grid;
+  },
+
+  initializeGrid: function(rows, columns) {
+    this.grid = this.matrix(rows, columns);
+  },
+
+  initializeCubes: function(rows, columns) {
+    var cube;
+    this.cubes = this.matrix(rows, columns)
+
+    this.cubeGeo = new THREE.CubeGeometry(20,20,20);
+
+    this.cubeMaterial = new THREE.MeshBasicMaterial({
+      shading: THREE.FlatShading,
+      map: THREE.ImageUtils.loadTexture("/images/square-outline.png")
+    });
+
+    this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
+    this.cubeMaterial.ambient = this.cubeMaterial.color;
+
+    for (x = 0; x < rows; x++)
+      for (y = 0; y < columns; y++) {
+        cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
+
+        cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
+
+        this.cubes[x][y] = cube;
+      };
   },
 
   randomnizeGrid: function() {
@@ -164,9 +169,7 @@ var GoL3D = {
 
     this.candidates = this.alive;
 
-    $.each(this.alive, function(_,coords) {
-      GoL3D.updateNeighbours(coords);
-    });
+    $.each(this.alive, function(_,coords) { GoL3D.updateNeighbours(coords); });
 
     this.alive = [];
 
@@ -178,7 +181,7 @@ var GoL3D = {
         if (neighbours < 2 || neighbours > 3)
           GoL3D.killCell(x, y)
         else {
-          GoL3D.grid[x][y] -= neighbours
+          GoL3D.grid[x][y] = 10
           GoL3D.alive.push(candidate)
         }
       else
