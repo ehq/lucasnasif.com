@@ -37,23 +37,21 @@ var GoL = {
     }
   },
 
-  // Calculate 10 generations at a time,
+  // Calculate 50 generations at a time,
   // and pass them to the foreground,
   // that way the syncrhonization time between this worker,
-  // and the main js is reduced to a 1/10th of the time.
+  // and the main js is reduced to a 1/50th of the time.
   run: function() {
-    var generations, i;
+    setTimeout(GoL.run, 5000)
 
-    while (true) {
-      generations = [];
+    var generations = [];
 
-      for (i = 0; i < 200; i++) {
-        GoL.nextGeneration();
-        generations.push({ born: GoL.born, dead: GoL.dead });
-      }
-
-      postMessage(generations);
+    for (var i = 0; i < 50; i++) {
+      GoL.nextGeneration();
+      generations.push({ born: GoL.born, dead: GoL.dead });
     }
+
+    postMessage(generations);
   },
 
   nextGeneration: function() {
