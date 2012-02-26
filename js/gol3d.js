@@ -1,11 +1,15 @@
 var GoL3D = {
   init: function(element, options) {
-    this.size = 150;
+    this.size = 200;
+    this.nextGenerations = [];
+
+    // Initialize the worker first, so it starts calulating
+    // the next generations of cells.
+    this.initializeWorker();
+
     this.transitions = [];
 
-    this.initializeGrid(this.size, this.size);
     this.initializeCubes(this.size, this.size);
-    this.randomnizeGrid();
     this.buildScene();
 
     this.cubesLoop();
@@ -48,7 +52,6 @@ var GoL3D = {
     // Plane
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
                                 new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
-
     this.scene.add(this.plane);
 
     // Renderer
@@ -57,13 +60,12 @@ var GoL3D = {
     this.container.appendChild(this.renderer.domElement);
   },
 
-  drawCell: function(x,y) {
-    this.scene.add(this.cubes[x][y]);
+  drawCell: function(coords) {
+    this.scene.add(this.cubes(coords[0], coords[1]));
   },
 
-  killCell: function(x,y) {
-    this.scene.remove(this.cubes[x][y]);
-    this.grid[x][y] = undefined;
+  killCell: function(coords) {
+    this.scene.remove(this.cubes(coords[0], coords[1]));
   },
 
   animate: function() {
@@ -99,9 +101,28 @@ var GoL3D = {
     this.camera.lookAt(this.cameraTarget);
   },
 
+  initializeWorker: function() {
+    var worker = new Worker("/js/gol_worker.js");
+
+    worker.onmessage = function(e) {
+      GoL3D.nextGenerations = GoL3D.nextGenerations.concat(e.data);
+    };
+
+    worker.postMessage({ size: GoL3D.size })
+  },
+
   cubesLoop: function() {
-    setTimeout(GoL3D.cubesLoop, 150)
-    GoL3D.nextGeneration()
+    setTimeout(GoL3D.cubesLoop, 150);
+
+    var gen = GoL3D.nextGenerations.shift();
+
+    if (!gen) return;
+
+    for (var i = 0, l = gen.born.length; i < l; i++)
+      GoL3D.drawCell(gen.born[i]);
+
+    for (var i = 0, l = gen.dead.length; i < l; i++)
+      GoL3D.killCell(gen.dead[i]);
   },
 
   render: function() {
@@ -117,13 +138,21 @@ var GoL3D = {
     return grid;
   },
 
-  initializeGrid: function(rows, columns) {
-    this.grid = this.matrix(rows, columns);
+  cubes: function(x,y) {
+    if (this.cubesCache[x][y]) return this.cubesCache[x][y]
+
+    var cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
+
+    cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
+
+    this.cubesCache[x][y] = cube;
+
+    return cube;
   },
 
   initializeCubes: function(rows, columns) {
     var cube;
-    this.cubes = this.matrix(rows, columns)
+    this.cubesCache = this.matrix(rows, columns)
 
     this.cubeGeo = new THREE.CubeGeometry(20,20,20);
 
@@ -134,91 +163,5 @@ var GoL3D = {
 
     this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
     this.cubeMaterial.ambient = this.cubeMaterial.color;
-
-    for (x = 0; x < rows; x++)
-      for (y = 0; y < columns; y++) {
-        cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-
-        cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
-
-        this.cubes[x][y] = cube;
-      };
-  },
-
-  randomnizeGrid: function() {
-    var self   = this;
-    var floor  = Math.floor;
-    var random = Math.random;
-    var limit  = this.size * 30;
-    var x, y;
-
-    this.alive = [];
-    this.candidates = [];
-
-    for (i = 0; i < limit; i++) {
-      x = floor(random()*self.size);
-      y = floor(random()*self.size);
-
-      self.grid[x][y] = 10;
-      self.alive.push([x,y])
-    }
-  },
-
-  nextGeneration: function() {
-    var x, y, neighbours;
-
-    this.candidates = this.alive;
-
-    $.each(this.alive, function(_,coords) { GoL3D.updateNeighbours(coords); });
-
-    this.alive = [];
-
-    $.each(this.candidates, function(_,candidate) {
-      x = candidate[0]; y = candidate[1];
-      neighbours = GoL3D.grid[x][y] % 10;
-
-      if (GoL3D.grid[x][y] >= 10)
-        if (neighbours < 2 || neighbours > 3)
-          GoL3D.killCell(x, y)
-        else {
-          GoL3D.grid[x][y] = 10
-          GoL3D.alive.push(candidate)
-        }
-      else
-        if (GoL3D.grid[x][y] == 3) {
-          GoL3D.grid[x][y] = 10;
-          GoL3D.drawCell(x,y);
-          GoL3D.alive.push(candidate)
-        } else
-          GoL3D.grid[x][y] = undefined
-    });
-  },
-
-  updateNeighbours: function(coord) {
-    var self = this;
-    var row = coord[0], column = coord[1];
-    var j, x, y;
-    var coords  = [
-      [row - 1, column - 1 ],
-      [row - 1, column     ],
-      [row - 1, column + 1 ],
-      [row   ,  column - 1 ],
-      [row   ,  column + 1 ],
-      [row + 1, column - 1 ],
-      [row + 1, column     ],
-      [row + 1, column + 1 ]
-    ];
-
-    for (j = 0; j < 8; j++)
-      if (coords[j][0] >= 0 && coords[j][0] < self.size && coords[j][1] >= 0 && coords[j][1] < self.size) {
-        x = coords[j][0]; y = coords[j][1];
-
-        if (self.grid[x][y])
-          self.grid[x][y]++;
-        else {
-          self.grid[x][y] = 1;
-          self.candidates.push(coords[j])
-        };
-      };
   }
 }
