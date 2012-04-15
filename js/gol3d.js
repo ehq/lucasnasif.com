@@ -4,7 +4,7 @@ var GoL3D = {
     this.nextGenerations = [];
 
     // Initialize the worker first, so it starts calulating
-    // the next generations of cells.
+    // the future generations of cells.
     this.initializeWorker();
 
     this.transitions = [];
@@ -17,6 +17,7 @@ var GoL3D = {
   },
 
   buildScene: function() {
+    // DOM Elements.
     this.container = document.createElement('div');
     document.body.appendChild(this.container);
 
@@ -28,10 +29,10 @@ var GoL3D = {
       "background": "black"
     })
 
-    // Scene
+    // Scene.
     this.scene = new THREE.Scene();
 
-    // Camera
+    // Camera.
     var w = window.innerWidth;
     var h = window.innerHeight;
     this.camera = new THREE.CombinedCamera(w, h, 40, 1, 10000, -2000, 10000);
@@ -49,12 +50,12 @@ var GoL3D = {
 
     this.scene.add(this.camera);
 
-    // Plane
+    // Plane.
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
                                 new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
     this.scene.add(this.plane);
 
-    // Renderer
+    // Renderer.
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(w, h);
     this.container.appendChild(this.renderer.domElement);
