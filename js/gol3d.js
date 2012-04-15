@@ -1,6 +1,6 @@
 var GoL3D = {
-  init: function(element, options) {
-    this.size = 200;
+  init: function() {
+    this.size = 50;
     this.nextGenerations = [];
 
     // Initialize the worker first, so it starts calulating
@@ -81,6 +81,7 @@ var GoL3D = {
 
   moveCamera: function() {
     var diff, tr = this.transitions[0];
+
     if (!tr) return;
 
     $.each(["x","y","z"], function(_,axis) {

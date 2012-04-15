@@ -1,7 +1,8 @@
 $(document).ready(function() {
   // Start the Game of Life widget.
-  GoL3D.init($("#gol"), { 'size': 200, 'speed': 150 });
+  GoL3D.init();
 
+  // FIXME: WIP. These still look a bit odd...
   $("#enjoy_the_show").click(function() {
     $("#info_container").fadeOut("slow");
     GoL3D.transition(-2000, 1600, 2800);

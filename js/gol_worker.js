@@ -1,3 +1,7 @@
+// This Web Worker is in charge of calculating future generatinos,
+// The idea is that these are calculated in the background and then cached,
+// so the main GoL widget concentrates only on rendering the cells,
+// which is the most demanding task for the cpu.
 var GoL = {
   init: function(size) {
     GoL.size = size;
@@ -37,16 +41,16 @@ var GoL = {
     }
   },
 
-  // Calculate 50 generations at a time,
+  // Calculate 10 generations at a time,
   // and pass them to the foreground,
   // that way the syncrhonization time between this worker,
-  // and the main js is reduced to a 1/50th of the time.
+  // and the main js is reduced to a 1/10th of the time.
   run: function() {
-    setTimeout(GoL.run, 5000)
+    setTimeout(GoL.run, 500)
 
     var generations = [];
 
-    for (var i = 0; i < 50; i++) {
+    for (var i = 0; i < 10; i++) {
       GoL.nextGeneration();
       generations.push({ born: GoL.born, dead: GoL.dead });
     }
