@@ -5,6 +5,7 @@ $(document).ready(function() {
   // FIXME: WIP. These still look a bit odd...
   $("#enjoy_the_show").click(function() {
     $("#info_container").fadeOut("slow");
+    $("#fork_me").fadeIn("slow");
     GoL3D.transition(-2000, 1600, 2800);
     GoL3D.transition(800, 200, 100);
     GoL3D.transition(5500, 200, 100);
