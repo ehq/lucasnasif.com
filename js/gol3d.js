@@ -1,6 +1,6 @@
 var GoL3D = {
   init: function(element, options) {
-    this.size = 150;
+    this.size = options.size || 200;
     this.transitions = [];
 
     this.initializeGrid(this.size, this.size);
@@ -78,6 +78,7 @@ var GoL3D = {
 
   moveCamera: function() {
     var diff, tr = this.transitions[0];
+
     if (!tr) return;
 
     $.each(["x","y","z"], function(_,axis) {
