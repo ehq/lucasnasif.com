@@ -1,6 +1,6 @@
 var GoL3D = {
   init: function() {
-    this.size = 50;
+    this.size = 200;
     this.nextGenerations = [];
 
     // Initialize the worker first, so it starts calulating
