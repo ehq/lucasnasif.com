@@ -1,0 +1,18 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    kgio (2.7.4)
+    rack (1.4.1)
+    raindrops (0.9.0)
+    therubyracer-heroku (0.8.1.pre3)
+    unicorn (4.3.1)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  therubyracer-heroku
+  unicorn
