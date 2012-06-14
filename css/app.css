@@ -207,6 +207,4 @@ footer {
 .twitter  { background-image: url(/images/twitter.png);  }
 .facebook { background-image: url(/images/facebook.png); }
 .gmail    { background-image: url(/images/gmail.png);    }
-#fork_me {
-  display: none;
-}
+#fork_me { display: none; };

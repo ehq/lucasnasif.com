@@ -9,8 +9,8 @@ var GoL3D = {
 
     this.transitions = [];
 
-    this.initializeCubes(this.size, this.size);
     this.buildScene();
+    this.initializeCubes(this.size, this.size);
 
     this.cubesLoop();
     this.animate();
@@ -62,11 +62,11 @@ var GoL3D = {
   },
 
   drawCell: function(coords) {
-    this.scene.add(this.cubes(coords[0], coords[1]));
+    this.cubes(coords[0], coords[1]).visible = true;
   },
 
   killCell: function(coords) {
-    this.scene.remove(this.cubes(coords[0], coords[1]));
+    this.cubes(coords[0], coords[1]).visible = false;
   },
 
   animate: function() {
@@ -144,15 +144,7 @@ var GoL3D = {
   // Cubes might be used over and over again in the same position.
   // They are cached, so next time we don't need to build the same cube again.
   cubes: function(x,y) {
-    if (this.cubesCache[x][y]) return this.cubesCache[x][y]
-
-    var cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
-
-    cube.position = new THREE.Vector3((x - this.size/2) * 20 + 10, (y - this.size/2) * 20 + 10, 10)
-
-    this.cubesCache[x][y] = cube;
-
-    return cube;
+    return this.cubesCache[x][y]
   },
 
   initializeCubes: function(rows, columns) {
@@ -168,5 +160,20 @@ var GoL3D = {
 
     this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
     this.cubeMaterial.ambient = this.cubeMaterial.color;
+
+    var x,y, cube, size = this.size;
+
+    for (x = 0; x < size; x++)
+      for (y = 0; y < size; y++) {
+        cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
+
+        cube.position = new THREE.Vector3((x - size/2) * 20 + 10, (y - size/2) * 20 + 10, 10);
+
+        cube.visible = false;
+
+        this.cubesCache[x][y] = cube;
+
+        this.scene.add(cube);
+      }
   }
 }
