@@ -53,12 +53,7 @@ a {
   margin-right: 15px;
   font-size: 55px;
   color: #5Baaee;
-  transition: all 0.50s ease-in-out;
-  -webkit-transition: all 0.50s ease-in-out;
-  -moz-transition: all 0.50s ease-in-out;
-}
-.name:hover {
-  color: #AE0000;
+  font-family: 'Electrolize', sans-serif;
 }
 .description {
   color: #AE0000;

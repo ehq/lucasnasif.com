@@ -117,13 +117,14 @@ var GoL3D = {
     setTimeout(GoL3D.cubesLoop, 150);
 
     var gen = GoL3D.nextGenerations.shift();
+    var i, l;
 
     if (!gen) return;
 
-    for (var i = 0, l = gen.born.length; i < l; i++)
+    for (i = 0, l = gen.born.length; i < l; i++)
       GoL3D.drawCell(gen.born[i]);
 
-    for (var i = 0, l = gen.dead.length; i < l; i++)
+    for (i = 0, l = gen.dead.length; i < l; i++)
       GoL3D.killCell(gen.dead[i]);
   },
 
@@ -140,6 +141,8 @@ var GoL3D = {
     return grid;
   },
 
+  // Cubes might be used over and over again in the same position.
+  // They are cached, so next time we don't need to build the same cube again.
   cubes: function(x,y) {
     if (this.cubesCache[x][y]) return this.cubesCache[x][y]
 
