@@ -17,6 +17,9 @@ var GoL3D = {
   },
 
   buildScene: function() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+
     // DOM Elements.
     this.container = document.createElement('div');
     document.body.appendChild(this.container);
@@ -33,8 +36,6 @@ var GoL3D = {
     this.scene = new THREE.Scene();
 
     // Camera.
-    var w = window.innerWidth;
-    var h = window.innerHeight;
     this.camera = new THREE.CombinedCamera(w, h, 40, 1, 10000, -2000, 10000);
     this.theta = Math.cos(45 * Math.PI / 360);
     this.alpha = Math.sin(45 * Math.PI / 360);
@@ -61,12 +62,29 @@ var GoL3D = {
     this.container.appendChild(this.renderer.domElement);
   },
 
+  // Get a cube from the pool, and adjust it's position and visibility.
+  // Also store it in the liveCubes matrix.
   drawCell: function(coords) {
-    this.cubes(coords[0], coords[1]).visible = true;
+    var cube = this.getCube();
+    var size = this.size / 2;
+
+    // FIXME: Is it absolutely necessary to create a new vector each time?
+    cube.position = new THREE.Vector3((coords[0] - size) * 20 + 10,
+                                      (coords[1] - size) * 20 + 10, 10);
+    cube.visible  = true;
+
+    this.liveCubes[coords[0]][coords[1]] = cube;
   },
 
+  // Removes the cube form the liveCubes matrix,
+  // and stores it back in the cubes pool.
   killCell: function(coords) {
-    this.cubes(coords[0], coords[1]).visible = false;
+    var cube = this.liveCubes[coords[0]][coords[1]];
+
+    cube.visible = false;
+
+    this.liveCubes[coords[0]][coords[1]] = undefined;
+    this.cubesPool.push(cube);
   },
 
   animate: function() {
@@ -85,7 +103,8 @@ var GoL3D = {
     if (!tr) return;
 
     $.each(["x","y","z"], function(_,axis) {
-      diff = GoL3D["camera_"+axis] - tr[axis]
+      diff = GoL3D["camera_" + axis] - tr[axis]
+
       Math.abs(diff) > 30 ?
         GoL3D["camera_"+axis] += 30 * (diff > 0 ? -1 : 1) :
         GoL3D.still_camera[axis] = true;
@@ -119,7 +138,7 @@ var GoL3D = {
     var gen = GoL3D.nextGenerations.shift();
     var i, l;
 
-    if (!gen) return;
+    if (! gen) return;
 
     for (i = 0, l = gen.born.length; i < l; i++)
       GoL3D.drawCell(gen.born[i]);
@@ -143,13 +162,12 @@ var GoL3D = {
 
   // Cubes might be used over and over again in the same position.
   // They are cached, so next time we don't need to build the same cube again.
-  cubes: function(x,y) {
-    return this.cubesCache[x][y]
+  getCube: function(x,y) {
+    return this.cubesPool.shift() || this.buildCube();
   },
 
   initializeCubes: function(rows, columns) {
-    var cube;
-    this.cubesCache = this.matrix(rows, columns)
+    var cube, i;
 
     this.cubeGeo = new THREE.CubeGeometry(20,20,20);
 
@@ -161,19 +179,28 @@ var GoL3D = {
     this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
     this.cubeMaterial.ambient = this.cubeMaterial.color;
 
-    var x,y, cube, size = this.size;
+    // Build a pool of objects to avoid creating/deleting
+    // them later, over and over.
+    this.cubesPool = [];
+    this.liveCubes = this.matrix(this.size, this.size);
 
-    for (x = 0; x < size; x++)
-      for (y = 0; y < size; y++) {
-        cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
+    // This is the size used to generate the initial random position
+    var pool_size = this.size * 25;
 
-        cube.position = new THREE.Vector3((x - size/2) * 20 + 10, (y - size/2) * 20 + 10, 10);
+    for (i = 0; i < pool_size; i++) this.buildCube();
+  },
 
-        cube.visible = false;
+  buildCube: function() {
+    var cube = new THREE.Mesh(this.cubeGeo, this.cubeMaterial);
 
-        this.cubesCache[x][y] = cube;
+    cube.visible = false;
 
-        this.scene.add(cube);
-      }
+    this.cubesPool.push(cube);
+
+    this.scene.add(cube);
+
+    return cube;
   }
-}
+};
+
+// Special thanks to mrdoob, gero3 and bai from #three.js on Freenode.

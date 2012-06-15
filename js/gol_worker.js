@@ -29,28 +29,33 @@ var GoL = {
   randomnizeGrid: function() {
     var floor  = Math.floor;
     var random = Math.random;
-    var limit  = GoL.size * 30;
+    var limit  = GoL.size * 20;
     var x, y;
 
     for (i = 0; i < limit; i++) {
       x = floor(random()*GoL.size);
       y = floor(random()*GoL.size);
 
-      GoL.grid[x][y] = 10;
-      GoL.alive.push([x,y])
+      if (GoL.grid[x][y] != 10) {
+        GoL.grid[x][y] = 10;
+        GoL.alive.push([x,y]);
+      }
     }
+
+    // Draw the initial position too.
+    postMessage([{ born: GoL.alive, dead: [] }]);
   },
 
-  // Calculate 10 generations at a time,
+  // Calculate 20 generations at a time,
   // and pass them to the foreground,
   // that way the syncrhonization time between this worker,
   // and the main js is reduced to a 1/10th of the time.
   run: function() {
-    setTimeout(GoL.run, 1000)
+    setTimeout(GoL.run, 3000)
 
-    var generations = [];
+    var generations = [], i;
 
-    for (var i = 0; i < 10; i++) {
+    for (i = 0; i < 22; i++) {
       GoL.nextGeneration();
       generations.push({ born: GoL.born, dead: GoL.dead });
     }
@@ -59,18 +64,18 @@ var GoL = {
   },
 
   nextGeneration: function() {
-    var x, y, neighbours, candidate;
+    var i, x, y, neighbours, candidate;
 
     GoL.candidates = GoL.alive;
 
-    for (var i = 0, l = GoL.alive.length; i < l; i++)
+    for (i = 0, l = GoL.alive.length; i < l; i++)
       GoL.updateNeighbours(GoL.alive[i]);
 
     GoL.alive = [];
     GoL.born  = [];
     GoL.dead  = [];
 
-    for (var i = 0, l = GoL.candidates.length; i < l; i++) {
+    for (i = 0, l = GoL.candidates.length; i < l; i++) {
       candidate = GoL.candidates[i]; x = candidate[0]; y = candidate[1];
       neighbours = GoL.grid[x][y] % 10;
 
@@ -94,7 +99,7 @@ var GoL = {
 
   updateNeighbours: function(coord) {
     var row = coord[0], column = coord[1];
-    var x, y;
+    var j, x, y;
     var coords  = [
       [row - 1, column - 1],
       [row - 1, column    ],
@@ -106,7 +111,7 @@ var GoL = {
       [row + 1, column + 1]
     ];
 
-    for (var j = 0; j < 8; j++)
+    for (j = 0; j < 8; j++)
       if (coords[j][0] >= 0 && coords[j][0] < GoL.size && coords[j][1] >= 0 && coords[j][1] < GoL.size) {
         x = coords[j][0]; y = coords[j][1];
 
