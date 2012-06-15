@@ -29,7 +29,7 @@ var GoL = {
   randomnizeGrid: function() {
     var floor  = Math.floor;
     var random = Math.random;
-    var limit  = GoL.size * 20;
+    var limit  = GoL.size * 25;
     var x, y;
 
     for (i = 0; i < limit; i++) {
@@ -51,11 +51,11 @@ var GoL = {
   // that way the syncrhonization time between this worker,
   // and the main js is reduced to a 1/10th of the time.
   run: function() {
-    setTimeout(GoL.run, 3000);
+    setTimeout(GoL.run, 2000);
 
     var generations = [], i;
 
-    for (i = 0; i < 22; i++) {
+    for (i = 0; i < 30; i++) {
       GoL.nextGeneration();
       generations.push({ born: GoL.born, dead: GoL.dead });
     }

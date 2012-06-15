@@ -134,7 +134,7 @@ var GoL3D = {
   },
 
   cubesLoop: function() {
-    setTimeout(GoL3D.cubesLoop, 150);
+    setTimeout(GoL3D.cubesLoop, 100);
 
     var gen = GoL3D.nextGenerations.shift();
     var i, l;
@@ -186,7 +186,7 @@ var GoL3D = {
     this.liveCubes = this.matrix(this.size, this.size);
 
     // This is the size used to generate the initial random position
-    var pool_size = this.size * 25;
+    var pool_size = this.size * 35;
 
     for (i = 0; i < pool_size; i++) this.buildCube();
   },
