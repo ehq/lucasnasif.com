@@ -202,5 +202,3 @@ var GoL3D = {
     return cube;
   }
 };
-
-// Special thanks to mrdoob, gero3 and bai from #three.js on Freenode.
