@@ -68,9 +68,10 @@ var GoL3D = {
     var cube = this.getCube();
     var size = this.size / 2;
 
-    // FIXME: Is it absolutely necessary to create a new vector each time?
-    cube.position = new THREE.Vector3((coords[0] - size) * 20 + 10,
-                                      (coords[1] - size) * 20 + 10, 10);
+    cube.position.x = (coords[0] - size) * 20 + 10;
+    cube.position.y = (coords[1] - size) * 20 + 10;
+    cube.position.z = 10;
+
     cube.visible  = true;
 
     this.liveCubes[coords[0]][coords[1]] = cube;
