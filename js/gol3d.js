@@ -54,6 +54,9 @@ var GoL3D = {
     // Plane.
     this.plane = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000, 200, 200),
                                 new THREE.MeshBasicMaterial({ color: 0x222222, wireframe: true }));
+
+    this.plane.rotation.x = Math.PI / 2;
+
     this.scene.add(this.plane);
 
     // Renderer.
