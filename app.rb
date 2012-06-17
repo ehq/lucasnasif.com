@@ -17,7 +17,4 @@ Cuba.define do
   on get, root do
     res.write view("home")
   end
-  on "google86d3858c50127ce4.html" do
-    res.write view("google_analytics")
-  end
 end
