@@ -1,10 +1,3 @@
-source 'http://rubygems.org'
+source :rubygems
 
-gem 'cuba'
-gem 'tilt'
-gem 'haml'
-
-group :production do
-  gem 'unicorn'
-  gem 'therubyracer-heroku'
-end
+gem 'rack'
