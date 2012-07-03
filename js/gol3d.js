@@ -177,7 +177,7 @@ var GoL3D = {
 
     this.cubeMaterial = new THREE.MeshBasicMaterial({
       shading: THREE.FlatShading,
-      map: THREE.ImageUtils.loadTexture("/images/square-outline.png")
+      map: THREE.ImageUtils.loadTexture("/img/square-outline.png")
     });
 
     this.cubeMaterial.color.setHSV(0.6, 0.4, 1.0);
